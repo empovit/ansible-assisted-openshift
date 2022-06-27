@@ -1,0 +1,16 @@
+namespace: empovit
+name: assisted_openshift
+version: 1.0.0
+readme: README.md
+authors:
+- https://github.com/empovit
+description: Collection of Ansible roles for OpenShift Assisted Installer
+license:
+- Apache-2.0
+tags: [ openshift ]
+
+dependencies: { karmab.ansible_aicli_modules }
+repository: https://github.com/empovit/ansible-assisted-openshift
+issues: https://github.com/empovit/ansible-assisted-openshift/issues
+build_ignore: []
+
