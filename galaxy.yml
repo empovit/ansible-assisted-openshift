@@ -9,7 +9,7 @@ license:
 - Apache-2.0
 tags: [ openshift ]
 
-dependencies: { karmab.ansible_aicli_modules }
+dependencies: {}
 repository: https://github.com/empovit/ansible-assisted-openshift
 issues: https://github.com/empovit/ansible-assisted-openshift/issues
 build_ignore: []
