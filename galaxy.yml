@@ -9,7 +9,10 @@ license:
 - Apache-2.0
 tags: [ openshift ]
 
-dependencies: {}
+dependencies:
+   git+/home/vit/work/ansible-aicli-modules/: make-collection
+
+
 repository: https://github.com/empovit/ansible-assisted-openshift
 issues: https://github.com/empovit/ansible-assisted-openshift/issues
 build_ignore: []
