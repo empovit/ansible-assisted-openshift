@@ -7,10 +7,10 @@ authors:
 description: Collection of Ansible roles for OpenShift Assisted Installer
 license:
 - Apache-2.0
-tags: [ openshift ]
+tags: [ openshift, aicli ]
 
 dependencies:
-   git+/home/vit/work/ansible-aicli-modules/: make-collection
+   karmab.aicli: "*"
 
 
 repository: https://github.com/empovit/ansible-assisted-openshift

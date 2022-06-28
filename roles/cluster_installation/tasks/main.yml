@@ -1,18 +1,14 @@
-# work around the role not handing 'ready'
-- name: Wait for cluster to become ready
-  karmab.aicli.ai_cluster_info:
-    name: "{{ cluster_name }}"
-    offlinetoken: "{{ ocm_offline_token }}"
-  register: assisted_cluster
-  until: assisted_cluster.status == 'ready' or assisted_cluster.status == 'installed'
-  retries: 40
-  delay: 30
-
 - name: Install cluster
   karmab.aicli.ai_cluster:
     name: "{{ cluster_name }}"
     offlinetoken: "{{ ocm_offline_token }}"
     state: installed
+
+- name: Read the installed cluster
+  karmab.aicli.ai_cluster_info:
+    name: "{{ cluster_name }}"
+    offlinetoken: "{{ ocm_offline_token }}"
+  register: assisted_cluster
 
 - name: Download cluster kubeconfig
   command: "aicli --token {{ ocm_offline_token }} download kubeconfig --path {{ temp_directory }} {{ assisted_cluster.id }}"
