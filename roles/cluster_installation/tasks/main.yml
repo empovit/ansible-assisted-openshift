@@ -9,6 +9,7 @@
     name: "{{ cluster_name }}"
     offlinetoken: "{{ ocm_offline_token }}"
   register: assisted_cluster
+  failed_when: not assisted_cluster or assisted_cluster.status == "error"
 
 - name: Download cluster kubeconfig
   command: "aicli --token {{ ocm_offline_token }} download kubeconfig --path {{ temp_directory }} {{ assisted_cluster.id }}"
