@@ -9,7 +9,6 @@
     name: "{{ cluster_name }}"
     offlinetoken: "{{ ocm_offline_token }}"
   register: assisted_cluster
-  failed_when: not assisted_cluster or assisted_cluster.status == "error"
 
 - name: Download cluster kubeconfig
   command: "aicli --token {{ ocm_offline_token }} download kubeconfig --path {{ temp_directory }} {{ assisted_cluster.id }}"
@@ -35,3 +34,9 @@
     - "Ingress VIP: {{ assisted_cluster.ingress_vip }}"
     - "kubadmin password was saved to {{ kubeadmin_password }}"
     - "export KUBECONFIG={{ kubeconfig }}"
+
+- name: Ensure that the cluster was successfully installed
+  assert:
+    that:
+      - assisted_cluster and assisted_cluster.status != "error"
+    fail_msg: "Cluster status is 'error', make sure the installation was successful"
