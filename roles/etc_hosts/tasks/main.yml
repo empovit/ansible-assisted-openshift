@@ -1,15 +1,20 @@
+- name: Read current DNS resolution file "{{ dns_resolution_file }}"
+  ansible.builtin.slurp:
+    src: "{{ dns_resolution_file }}"
+  register: dns_entries
+
 - name: Warn if the API VIP already in {{ dns_resolution_file }}
-  debug:
+  ansible.builtin.debug:
     msg: "WARNING: {{ api_vip }} is already associated with a cluster in {{ dns_resolution_file }}. You might need to update the file manually"
-  when: update_etc_hosts and api_vip in lookup('file', dns_resolution_file)
+  when: update_etc_hosts and api_vip in dns_entries.content | b64decode
 
 - name: Warn if the ingress VIP already in {{ dns_resolution_file }}
-  debug:
+  ansible.builtin.debug:
     msg: "WARNING: {{ ingress_vip }} is already associated with a cluster in {{ dns_resolution_file }}. You might need to update the file manually"
-  when: update_etc_hosts and ingress_vip in lookup('file', dns_resolution_file)
+  when: update_etc_hosts and ingress_vip in dns_entries.content | b64decode
 
-- name: Update API VIP in {{ dns_resolution_file }}
-  replace:
+- name: Update API VIP in "{{ dns_resolution_file }}"
+  ansible.builtin.replace:
     path: "{{ dns_resolution_file }}"
     regexp: "{{ api_vip_regex }}"
     replace: "{{ api_vip }}   \\2"
@@ -21,8 +26,8 @@
   when: update_etc_hosts
   register: _api_vip_update_result
 
-- name: Update ingress VIP in {{ dns_resolution_file }}
-  replace:
+- name: Update ingress VIP in "{{ dns_resolution_file }}"
+  ansible.builtin.replace:
     path: "{{ dns_resolution_file }}"
     regexp: "{{ ingress_vip_regex }}"
     replace: "{{ ingress_vip }}   \\2"
@@ -33,8 +38,8 @@
   become: true
   when: update_etc_hosts
 
-- name: Add entries to {{ dns_resolution_file }}
-  lineinfile:
+- name: Add entries to "{{ dns_resolution_file }}" if didn't exist already
+  ansible.builtin.lineinfile:
     path: "{{ dns_resolution_file }}"
     line: |
 
@@ -50,4 +55,10 @@
     group: root
     mode: '0644'
   become: true
-  when: update_etc_hosts and dns_name not in lookup('file', dns_resolution_file)
+  when: update_etc_hosts and dns_name not in dns_entries.content | b64decode
+  register: _add_entries_result
+
+- name: Inform user of changes in "{{ dns_resolution_file }}"
+  ansible.builtin.debug:
+    msg: "IMPORTANT: Your {{ dns_resolution_file }} file has been changed. A backup file was created in the same directory"
+  when: _api_vip_update_result.changed or _add_entries_result.changed

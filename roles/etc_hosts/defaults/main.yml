@@ -1,2 +1,3 @@
 ---
 update_etc_hosts: false
+dns_resolution_file: /etc/hosts
