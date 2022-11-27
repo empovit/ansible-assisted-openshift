@@ -1,6 +1,6 @@
 namespace: empovit
 name: assisted_openshift
-version: 1.0.0
+version: 2.0.0-pre-release
 readme: README.md
 authors:
 - https://github.com/empovit
